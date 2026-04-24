@@ -73,7 +73,7 @@ trigger whitelist w1 HunterGroup Players true
 -- proximity-hunter.lua
 --
 -- BEHAVIOUR:
---   Solo player enters zone  →  wait 10 s  →  model moves to player  →  kill
+--   Solo player enters zone  →  wait 10 s  →  print tween/explosion commands  →  reset
 --   2+ players in zone       →  model stays still, no kill
 --
 -- CONFIGURATION — edit these values to match your setup:
@@ -85,18 +85,16 @@ local EXPL_RADIUS    = 10            -- explosion radius in studs
 local EXPL_DAMAGE    = 200           -- damage (200 kills a full-health player)
 local EXPL_TYPE      = "Grenade"     -- explosion visual (see rge-api-reference.md)
 
+-- TARGET_PX / TARGET_PY / TARGET_PZ are placeholder coordinates.
+-- RGE trigger scripts cannot read live player position; hard-code a fixed
+-- strike point for your map, or update these before the hunt sequence runs.
+local TARGET_PX = 0
+local TARGET_PY = 0
+local TARGET_PZ = 0
+
 -- ── Internal state ──────────────────────────────────────────────────────────
 local isActive    = false   -- true while a hunt sequence is running
 local targetPlayer = nil    -- the player currently being hunted
-
--- ── Helper: get player position as three numbers ─────────────────────────────
-local function getPlayerXYZ(player)
-    if not player or not player.Character then return nil end
-    local hrp = player.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return nil end
-    local p = hrp.Position
-    return p.X, p.Y, p.Z
-end
 
 -- ── onInit ────────────────────────────────────────────────────────────────────
 function onInit(trigger)
@@ -105,7 +103,7 @@ end
 
 -- ── onEnter ───────────────────────────────────────────────────────────────────
 function onEnter(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if not player then return end
 
     -- Count players currently inside the zone (includes the one who just entered)
@@ -135,7 +133,7 @@ end
 
 -- ── onExit ────────────────────────────────────────────────────────────────────
 function onExit(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if not player then return end
 
     -- If the hunted player escaped, cancel the countdown
@@ -171,49 +169,27 @@ function onTimer(trigger, timerID)
         return
     end
 
-    if not targetPlayer or not targetPlayer.Character then
+    if not targetPlayer then
         isActive     = false
         targetPlayer = nil
         return
     end
 
-    -- Get the target's current position
-    local x, y, z = getPlayerXYZ(targetPlayer)
-    if not x then
-        isActive     = false
-        targetPlayer = nil
-        return
-    end
-
-    -- Round to integers for cleaner console commands
-    local px, py, pz = math.floor(x + 0.5), math.floor(y + 0.5), math.floor(z + 0.5)
-
-    -- ── Move the model toward the player ──────────────────────────────────────
-    -- The tween command smoothly interpolates the model's position.
-    -- Format: tween [world] [UID] [duration] [pX] [pY] [pZ] [rX] [rY] [rZ]
-    --
-    -- IMPORTANT: Replace MODEL_UID with the actual UID you noted in Step 1.
-    -- This line is a template; you must run the equivalent console command OR
-    -- the RGE version you are on may support calling console commands from
-    -- Lua scripts — test in-game.
+    -- NOTE: RGE trigger scripts cannot read live player position.
+    -- Run the tween and explosion commands manually in the RGE console,
+    -- substituting the player's actual coordinates for pX pY pZ.
+    -- TARGET_PX/PY/PZ are zero by default — update them for your map layout.
     print(string.format(
-        "[ProximityHunter] TWEEN CMD: tween %s %s %d %d %d %d 0 0 0",
-        WORLD, MODEL_UID, TWEEN_DURATION, px, py, pz
+        "[ProximityHunter] Tween command (run in console): tween %s %s %d %d %d %d 0 0 0",
+        WORLD, MODEL_UID, TWEEN_DURATION, TARGET_PX, TARGET_PY, TARGET_PZ
     ))
 
     -- Wait for the tween to finish before detonating
     wait(TWEEN_DURATION + 0.1)
 
-    -- ── Kill the player with an explosion ─────────────────────────────────────
-    -- Re-fetch position in case the player moved slightly during the tween
-    x, y, z = getPlayerXYZ(targetPlayer)
-    if x then
-        px, py, pz = math.floor(x + 0.5), math.floor(y + 0.5), math.floor(z + 0.5)
-    end
-
     print(string.format(
-        "[ProximityHunter] EXPLOSION CMD: explosion %d %d %d %d %d %s",
-        EXPL_RADIUS, EXPL_DAMAGE, px, py, pz, EXPL_TYPE
+        "[ProximityHunter] Explosion command (run in console): explosion %d %d %d %d %d %s",
+        EXPL_RADIUS, EXPL_DAMAGE, TARGET_PX, TARGET_PY, TARGET_PZ, EXPL_TYPE
     ))
 
     -- Reset state so the creature can hunt again
@@ -224,7 +200,7 @@ end
 ```
 
 > **About the `tween` and `explosion` lines:**  
-> The `tween` and `explosion` are **RGE console commands**, not Lua functions. Inside a trigger script you cannot call them directly. The `print(...)` lines above output the exact command string to the console so you can copy-paste it, or use them as a reference when chaining triggers. If your RGE version supports executing console commands from Lua, replace the `print(...)` calls with the appropriate call syntax.
+> The `tween` and `explosion` are **RGE console commands**, not Lua functions. They cannot be called from a trigger script. The `print(...)` lines above output the exact command string to the console so you can copy-paste it. Player position is also not readable from a trigger script — set `TARGET_PX`, `TARGET_PY`, `TARGET_PZ` in the configuration block to fixed coordinates that match your map layout.
 
 ---
 

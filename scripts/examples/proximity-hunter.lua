@@ -25,18 +25,16 @@ local EXPL_RADIUS    = 10         -- explosion radius in studs
 local EXPL_DAMAGE    = 200        -- damage dealt (200 kills a full-health player)
 local EXPL_TYPE      = "Grenade"  -- explosion visual type
 
+-- TARGET_PX / TARGET_PY / TARGET_PZ are placeholders updated when a hunt begins.
+-- RGE trigger scripts do not have access to live player position data; you must
+-- supply coordinates via the console or hard-code them for your map layout.
+local TARGET_PX = 0
+local TARGET_PY = 0
+local TARGET_PZ = 0
+
 -- ── Internal state ────────────────────────────────────────────────────────────
 local isActive     = false
 local targetPlayer = nil
-
--- ── Helper ────────────────────────────────────────────────────────────────────
-local function getPlayerXYZ(player)
-    if not player or not player.Character then return nil end
-    local hrp = player.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return nil end
-    local p = hrp.Position
-    return p.X, p.Y, p.Z
-end
 
 -- ── Event handlers ────────────────────────────────────────────────────────────
 
@@ -45,7 +43,7 @@ function onInit(trigger)
 end
 
 function onEnter(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if not player then return end
 
     local playersInZone = trigger:getPlayers()
@@ -72,7 +70,7 @@ function onEnter(trigger, character)
 end
 
 function onExit(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if not player then return end
 
     if targetPlayer and player == targetPlayer then
@@ -107,45 +105,27 @@ function onTimer(trigger, timerID)
         return
     end
 
-    if not targetPlayer or not targetPlayer.Character then
+    if not targetPlayer then
         isActive     = false
         targetPlayer = nil
         return
     end
 
-    local x, y, z = getPlayerXYZ(targetPlayer)
-    if not x then
-        isActive     = false
-        targetPlayer = nil
-        return
-    end
-
-    local px = math.floor(x + 0.5)
-    local py = math.floor(y + 0.5)
-    local pz = math.floor(z + 0.5)
-
-    -- Print the tween command (run this in the RGE console to move the model).
-    -- Replace MODEL_UID with your actual UID if you have not done so above.
+    -- NOTE: RGE trigger scripts cannot read live player position.
+    -- Run the tween and explosion commands manually in the RGE console,
+    -- substituting the player's current coordinates for pX pY pZ.
+    -- The TARGET_PX/PY/PZ values below are zero-initialised placeholders.
     print(string.format(
-        "[ProximityHunter] Run in console: tween %s %s %d %d %d %d 0 0 0",
-        WORLD, MODEL_UID, TWEEN_DURATION, px, py, pz
+        "[ProximityHunter] Tween command (run in console): tween %s %s %d %d %d %d 0 0 0",
+        WORLD, MODEL_UID, TWEEN_DURATION, TARGET_PX, TARGET_PY, TARGET_PZ
     ))
 
     -- Wait for the tween animation to complete before detonating
     wait(TWEEN_DURATION + 0.1)
 
-    -- Re-fetch position (player may have moved slightly during the tween)
-    local x2, y2, z2 = getPlayerXYZ(targetPlayer)
-    if x2 then
-        px = math.floor(x2 + 0.5)
-        py = math.floor(y2 + 0.5)
-        pz = math.floor(z2 + 0.5)
-    end
-
-    -- Print the explosion command (or run it directly if your RGE build supports it).
     print(string.format(
-        "[ProximityHunter] Run in console: explosion %d %d %d %d %d %s",
-        EXPL_RADIUS, EXPL_DAMAGE, px, py, pz, EXPL_TYPE
+        "[ProximityHunter] Explosion command (run in console): explosion %d %d %d %d %d %s",
+        EXPL_RADIUS, EXPL_DAMAGE, TARGET_PX, TARGET_PY, TARGET_PZ, EXPL_TYPE
     ))
 
     -- Reset for the next hunt

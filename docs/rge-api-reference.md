@@ -305,6 +305,8 @@ Players.getByName(name: string) → Player | nil
 ```
 Look up a player by their Roblox username.
 
+> **Tip:** Inside `onEnter` and `onExit` handlers the `character` parameter is passed (not the Player directly). Resolve it to a Player using `Players.getByName(character.Name)`.
+
 ```lua
 Players.getBlufor() → {Player}
 Players.getOpfor() → {Player}
@@ -321,11 +323,16 @@ player.Team        -- "BLUFOR" or "OPFOR"
 
 ### Teleport a Player
 
-```lua
-local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-if hrp then
-    hrp.CFrame = CFrame.new(100, 10, -200)
-end
+Teleporting players from a trigger script is not supported by the RGE Lua API. Use the `teleport` console command instead:
+
+```
+teleport player [name] [pX] [pY] [pZ] [r]
+```
+
+Example — teleport a player named "Soldier1" to position 100, 10, -200 facing north (rotation 0):
+
+```
+teleport player Soldier1 100 10 -200 0
 ```
 
 ---
@@ -399,10 +406,12 @@ Connections persist for the lifetime of the trigger script.
 ## Known Limitations
 
 - Scripts run in a **sandboxed Lua 5.1 environment** — not all standard Lua libraries are available.
+- The `game` global (and all Roblox service APIs such as `game.Players:GetPlayerFromCharacter()`) is **not available** inside trigger scripts. Use the RGE `Players` namespace instead: `Players.getByName(character.Name)`.
 - The `require()` function is **not available** inside trigger scripts; each trigger is self-contained.
 - Long `wait()` chains inside event handlers can cause lag; use `trigger:setTimer()` for delays instead.
 - Some API functions marked ⚠️ are community-discovered and may not work in all RGE versions.
 - The `tween` and `explosion` commands are **console commands** — they cannot be called directly from a trigger Lua script. Use them via the RGE console, or combine triggers with timed console sequences where needed.
+- Player position cannot be read from within a trigger script. Use the `teleport` console command to move players, and the `tween` console command to move objects to fixed coordinates.
 
 ---
 

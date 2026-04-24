@@ -94,7 +94,7 @@ Called when a player's character walks into the trigger volume.
 
 ```lua
 function onEnter(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if player then
         print(player.Name .. " entered " .. trigger.Name)
     end
@@ -109,7 +109,7 @@ Called when a player's character leaves the trigger volume.
 
 ```lua
 function onExit(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if player then
         print(player.Name .. " left " .. trigger.Name)
     end
@@ -222,7 +222,7 @@ function onEnter(trigger, character)
     if entered then return end
     entered = true
 
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if player then
         print(player.Name .. " triggered the area!")
     end

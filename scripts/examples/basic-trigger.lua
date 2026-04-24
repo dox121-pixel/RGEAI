@@ -19,7 +19,7 @@ local onCooldown = false
 function onEnter(trigger, character)
     if onCooldown then return end
 
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if not player then return end
 
     onCooldown = true
@@ -32,7 +32,7 @@ end
 
 -- onExit fires when a player's character leaves the trigger volume.
 function onExit(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if player then
         print("[BasicTrigger] " .. player.Name .. " left " .. trigger.Name)
     end

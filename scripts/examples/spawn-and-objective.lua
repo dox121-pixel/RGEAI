@@ -94,7 +94,7 @@ function onEnter(trigger, character)
     -- Only start if no wave has been triggered yet
     if currentWaveIndex > 0 then return end
 
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if not player then return end
 
     log("BLUFOR entered compound — starting engagement")

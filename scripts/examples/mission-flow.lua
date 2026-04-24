@@ -116,7 +116,7 @@ end
 -- ─────────────────────────────────────────────────────────
 
 function onEnter(trigger, character)
-    local player = game.Players:GetPlayerFromCharacter(character)
+    local player = Players.getByName(character.Name)
     if not player then return end
 
     if trigger.Name == "TriggerStart" then
