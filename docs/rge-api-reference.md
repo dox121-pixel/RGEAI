@@ -402,6 +402,76 @@ Connections persist for the lifetime of the trigger script.
 - The `require()` function is **not available** inside trigger scripts; each trigger is self-contained.
 - Long `wait()` chains inside event handlers can cause lag; use `trigger:setTimer()` for delays instead.
 - Some API functions marked ⚠️ are community-discovered and may not work in all RGE versions.
+- The `tween` and `explosion` commands are **console commands** — they cannot be called directly from a trigger Lua script. Use them via the RGE console, or combine triggers with timed console sequences where needed.
+
+---
+
+## Console Commands Quick Reference
+
+The following commands are entered directly in the RGE console (not in trigger scripts). They are included here for completeness; see the RGE Guide for full syntax details.
+
+> `[ ]` = placeholder — do not include the brackets in the final command.  
+> `|` = separates alternative arguments.  
+> `pX/pY/pZ` = position on each axis. `rX/rY/rZ` = rotation. `sX/sY/sZ` = size.
+
+| Command | Short Description |
+|---------|-------------------|
+| `ban [player]` | Ban a named player from the private server |
+| `compounds [enable\|disable]` | Enable/disable preset enemies on the Ronograd map |
+| `create [world] [part\|wedge\|corner\|cylinder\|ball] [pX] [pY] [pZ]` | Create a part |
+| `color [world] [UID\|%var] [r] [g] [b]` | Set object colour |
+| `delete [world] [UID\|%var]` | Delete an object |
+| `duplicate [world] [UID\|%var]` | Duplicate an object |
+| `explosion [Radius] [Damage] [pX] [pY] [pZ] [Type]` | Create an explosion — see Explosion Types below |
+| `file insertmodel [world] [name] [pX] [pY] [pZ] [r]` | Spawn a saved model |
+| `file [savemodel\|deletemodel] [name]` | Save or delete a custom model |
+| `file list` | List saved worlds |
+| `file [save\|load\|delete] [name]` | Save, load, or delete a world file |
+| `file [savecopy\|loadcopy] [name]` | Save/load a world file when not the server owner |
+| `firstperson [lock\|unlock]` | Lock/unlock all players to first-person view |
+| `friendlyfire [disable\|squad\|all]` | Control PVP friendly fire |
+| `hud [disable\|enable]` | Forcefully show or hide the HUD for all players |
+| `kick [player]` | Kick a named player |
+| `material [world] [UID\|%var] [material]` | Set object material |
+| `move [world] [UID\|%var] [pX] [pY] [pZ] [rX] [rY] [rZ]` | Teleport an object |
+| `navmesh [enable\|disable\|editor\|confirm]` | Manage the custom navmesh |
+| `respawn [all\|others]` | Respawn all players or all except self |
+| `respawn [squad\|player] [name]` | Respawn a squad or a specific player |
+| `revive [disable\|enable]` | Allow or prevent player revival |
+| `serverlock [enable\|disable]` | Block/allow new players from joining |
+| `size [world] [UID\|%var] [sX] [sY] [sZ]` | Resize an object |
+| `squad [player] [none\|red\|blue\|orange\|yellow\|green]` | Set a player's squad |
+| `squadchanging [disable\|enable]` | Lock or unlock squad-changing |
+| `squadspawn [pX] [pY] [pZ] [r] [squad]` | Set a squad's spawnpoint |
+| `teleport [player\|squad\|all] [name] [pX] [pY] [pZ] [r]` | Teleport a player, squad, or all |
+| `time [start\|stop]` | Start or stop the day/night cycle |
+| `time now` | Print current time to console |
+| `time set [time]` | Set time of day |
+| `transparency [world] [UID\|%var] [0–1]` | Set object transparency |
+| `trigger ...` | See [rge-triggers.md](rge-triggers.md) for full trigger command reference |
+| `tween [world] [UID\|%var] [Duration] [pX] [pY] [pZ] [rX] [rY] [rZ]` | Smoothly move an object |
+| `world [list\|load] [name] [world]` | Deprecated — load saves from before RGE 2.0 |
+
+---
+
+## Explosion Types
+
+Used with the `explosion` console command's `[Type]` argument:
+
+| Type | Effect |
+|------|--------|
+| `None` | No visual effect or sound |
+| `Grenade` | Grenade explosion effect |
+| `Mine` | Mine explosion effect (as seen in Rono City / Fort) |
+| `Motar` | Mortar round impact effect *(note: intentional in-game spelling)* |
+| `ObjBig` | Large objective explosion (radar, planted explosive) |
+| `GroundVehicle` | Ground vehicle destruction (jeep, SRTV) |
+| `HelicopterVehicle` | Helicopter shot-down explosion |
+| `C4` | C4 charge explosion |
+| `RPG7v2` | Fired RPG projectile impact |
+| `Flash` | Flashbang detonation effect |
+| `Breach` | Breaching charge effect |
+| `Igla` | Unused effect |
 
 ---
 
