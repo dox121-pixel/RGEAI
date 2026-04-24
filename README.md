@@ -23,17 +23,20 @@ The RGE editor contains several tabs:
 
 ```
 RGEAI/
-├── README.md                   ← You are here
+├── README.md                              ← You are here
+├── Blackhawk Rescue Mission RGE Guide.md  ← Community RGE guide (source of truth)
 ├── docs/
-│   ├── rge-overview.md         ← RGE editor overview and getting started
-│   ├── rge-triggers.md         ← Trigger types, event handlers, and properties
-│   ├── rge-objects.md          ← Placeable objects: SpawnGroup, Objective, Gate, Vehicle
-│   └── rge-api-reference.md    ← Full scripting API reference
+│   ├── rge-overview.md                    ← RGE editor overview, controls, hotkeys, known bugs
+│   ├── rge-triggers.md                    ← Console trigger commands + Lua event handlers
+│   ├── rge-objects.md                     ← Placeable objects: SpawnGroup, Objective, Gate, Vehicle
+│   ├── rge-api-reference.md               ← Full scripting API + explosion types + console commands
+│   └── tutorial-proximity-hunter.md       ← Step-by-step: grouped model that hunts lone players
 └── scripts/
     └── examples/
-        ├── basic-trigger.lua          ← Minimal "player enters zone" example
-        ├── mission-flow.lua           ← Multi-stage mission sequence
-        └── spawn-and-objective.lua    ← Spawn enemies and track objective
+        ├── basic-trigger.lua              ← Minimal "player enters zone" example
+        ├── mission-flow.lua               ← Multi-stage mission sequence
+        ├── spawn-and-objective.lua        ← Spawn enemies and track objective
+        └── proximity-hunter.lua           ← Proximity hunter creature script (tutorial companion)
 ```
 
 ---
@@ -49,10 +52,11 @@ RGEAI/
 
 ## Documentation
 
-- [RGE Overview](docs/rge-overview.md)
-- [Triggers & Event Handlers](docs/rge-triggers.md)
+- [RGE Overview — Controls, Hotkeys & Known Bugs](docs/rge-overview.md)
+- [Triggers — Console Commands & Event Handlers](docs/rge-triggers.md)
 - [Placeable Objects Reference](docs/rge-objects.md)
-- [Full API Reference](docs/rge-api-reference.md)
+- [Full API Reference — Lua API, Explosion Types & Console Commands](docs/rge-api-reference.md)
+- [Tutorial: Proximity Hunter](docs/tutorial-proximity-hunter.md)
 
 ---
 

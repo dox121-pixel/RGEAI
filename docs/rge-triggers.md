@@ -2,6 +2,52 @@
 
 Triggers are the core scripting primitive in the RGE. Each trigger is a 3-D volume (box or sphere) that fires Lua event handlers when conditions are met. Scripts are attached directly to the trigger object inside the editor.
 
+The trigger system has two layers:
+1. **Console commands** — used in the in-game console to create trigger groups, assign objects to them, and configure their behaviour.
+2. **Trigger scripts (Lua)** — Lua code that runs automatically when a trigger fires an event.
+
+---
+
+## Console Commands — Setting Up Triggers
+
+These commands are entered in the RGE console. `[world]` is the world slice (e.g. `w1`), `[UID | %variableName]` is the object identifier, and `[Trigger Group Name]` is a string you choose.
+
+| Command | Function | Usage |
+|---------|----------|-------|
+| `trigger add` / `trigger remove` | Adds or removes a trigger volume from an object | `trigger [add\|remove] [world] [UID\|%name]` |
+| `trigger addbutton` / `trigger removebutton` | Adds or removes an interaction button (press **E**) to a trigger object | `trigger [addbutton\|removebutton] [world] [UID\|%name]` |
+| `trigger set` | Assigns a trigger object to a Trigger Group | `trigger set [world] [UID\|%name] [Group] [true\|false]` |
+| `trigger activate` / `trigger reset` | Activates or resets a Trigger Group | `trigger [activate\|reset] [world] [Group]` |
+| `trigger create` / `trigger delete` | Creates or deletes a Trigger Group | `trigger [create\|delete] [world] [Group]` |
+| `trigger color` | Sets the display colour of a Trigger Group wireframe | `trigger color [world] [Group] [0–255] [0–255] [0–255]` |
+| `trigger whitelist` | Sets which entity types can interact with a Trigger Group | `trigger whitelist [world] [Group] [Players\|Bots\|Helicopters\|Ground] [true\|false]` |
+| `trigger whitelist IsLooping` | Makes the trigger continuously repeat (loop) upon loading in | `trigger whitelist [world] [Group] IsLooping [true\|false]` |
+| `trigger executable` | ⛔ **DO NOT USE** — see [Discord warning](https://discord.com/channels/553917324340625424/1154567586948849735/1490605944390942810) | — |
+
+### Trigger Whitelist Entity Types
+
+| Value | Who can activate |
+|-------|-----------------|
+| `Players` | Human players |
+| `Bots` | AI soldier units |
+| `Helicopters` | Helicopter vehicles |
+| `Ground` | Ground vehicles |
+
+### IsLooping
+
+Setting `IsLooping true` on a Trigger Group makes it re-fire automatically and continuously. Use with care — looping triggers cannot be reset with the `reset` script command.
+
+---
+
+## Trigger Script Commands (inside Lua scripts)
+
+Two special commands are available inside trigger Lua scripts in addition to the full Lua API:
+
+| Command | Description | Usage |
+|---------|-------------|-------|
+| `wait` | Pauses script execution for the specified number of seconds | `wait(seconds)` |
+| `reset` | Resets the trigger group; **does not work on looping triggers** — must be the last executed line | `reset` |
+
 ---
 
 ## Trigger Properties (Editor Panel)
@@ -230,3 +276,4 @@ end
 - [RGE Overview](rge-overview.md)
 - [Placeable Objects Reference](rge-objects.md)
 - [Full API Reference](rge-api-reference.md)
+- [Tutorial: Proximity Hunter](tutorial-proximity-hunter.md)
