@@ -59,7 +59,7 @@ trigger set w1 %ProximityHunter HunterGroup true
 trigger whitelist w1 HunterGroup Players true
 ```
 
-> `trigger whitelist IsLooping` is **not** used here — the Lua script manages its own reset logic, so we do not need the trigger to loop at the console level.
+> `trigger whitelist IsLooping` is **not** used here — the Lua script manages its own reset logic, so we do not need the trigger to loop at the console level. For details on what IsLooping does, see [Trigger Console Commands — IsLooping](rge-triggers.md#islooping).
 
 ---
 

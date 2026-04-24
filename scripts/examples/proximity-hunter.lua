@@ -17,7 +17,8 @@
 
 -- ── Configuration ─────────────────────────────────────────────────────────────
 local WORLD          = "w1"       -- world slice (match your trigger create command)
-local MODEL_UID      = "XXXXX"    -- UID of your grouped model
+local MODEL_UID      = "XXXXX"    -- *** REQUIRED: replace with your grouped model's UID ***
+                                  --   (select the group → Properties panel → copy the UID number)
 local WAIT_SECONDS   = 10         -- countdown before the creature strikes
 local TWEEN_DURATION = 2          -- seconds the model takes to reach the player
 local EXPL_RADIUS    = 10         -- explosion radius in studs
